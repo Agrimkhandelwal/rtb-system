@@ -45,7 +45,7 @@ const Signup = () => {
 
         setLoading(true);
         try {
-            await register(formData.name, formData.email, formData.password, formData.role);
+            await register(formData.name, formData.email, formData.password, formData.role.toLowerCase());
             navigate('/login');
         } catch (err) {
             setError(err.response?.data?.error || 'Failed to sign up. Please try again.');
