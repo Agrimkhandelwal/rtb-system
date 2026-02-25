@@ -6,7 +6,10 @@ dotenv.config();
 const { Pool } = pg;
 
 export const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://rtb_user:rtb_password@localhost:5432/rtb_db',
+    connectionString: process.env.DATABASE_URL,
+    ssl:{
+        rejectUnauthorized: false,
+    },
 });
 
 pool.on('error', (err) => {
