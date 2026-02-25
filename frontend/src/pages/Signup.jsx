@@ -7,7 +7,7 @@ const Signup = () => {
         name: '',
         email: '',
         password: '',
-        role: 'DEALER'
+        role: 'dealer'
     });
     const [error, setError] = useState('');
     const [validationErrors, setValidationErrors] = useState({});
