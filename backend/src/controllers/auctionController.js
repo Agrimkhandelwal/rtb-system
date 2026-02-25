@@ -1,5 +1,4 @@
 import { query, getClient } from '../config/db.js';
-import { redisPublisher, redisClient } from '../config/redis.js';
 
 export const createAuction = async (req, res) => {
     try {
@@ -31,8 +30,8 @@ export const startAuction = async (req, res) => {
         // Publish update
         const io = req.app.get('io');
         const payload = { type: 'AUCTION_STARTED', auction: result.rows[0] };
-        redisPublisher.publish('auction_updates', JSON.stringify(payload));
-        io.emit('price_update', payload);
+        io.to(`auction_${id}`).emit('price_update', payload);
+        io.to('admin_dashboard').emit('price_update', payload);
 
         res.json(result.rows[0]);
     } catch (error) {
@@ -53,8 +52,8 @@ export const closeAuction = async (req, res) => {
 
         const io = req.app.get('io');
         const payload = { type: 'AUCTION_CLOSED', auction: result.rows[0] };
-        redisPublisher.publish('auction_updates', JSON.stringify(payload));
-        io.emit('price_update', payload);
+        io.to(`auction_${id}`).emit('price_update', payload);
+        io.to('admin_dashboard').emit('price_update', payload);
         res.json(result.rows[0]);
     } catch (error) {
         console.error(error);
@@ -179,12 +178,8 @@ export const placeBid = async (req, res) => {
             current_price: amount
         };
 
-        // Cache latest price in Redis
-        await redisClient.set(`auction:${id}:price`, JSON.stringify(payload));
-
         // 8. Broadcast new highest bid natively via Socket.io 
         const io = req.app.get('io');
-        await redisPublisher.publish('auction_events', JSON.stringify(payload));
         io.to(`auction_${id}`).emit('price_update', payload);
         io.to('admin_dashboard').emit('price_update', payload);
 

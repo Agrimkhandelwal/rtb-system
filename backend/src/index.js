@@ -2,9 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { createAdapter } from '@socket.io/redis-adapter';
 import dotenv from 'dotenv';
-import { redisPublisher, redisSubscriber } from './config/redis.js';
 
 // Routes
 import authRoutes from './routes/authRoutes.js';
@@ -28,11 +26,6 @@ const io = new Server(httpServer, {
 });
 
 app.set('io', io);
-
-// Configure Redis adapter for Socket.io
-const pubClient = redisPublisher;
-const subClient = redisSubscriber;
-io.adapter(createAdapter(pubClient, subClient));
 
 app.use(cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
