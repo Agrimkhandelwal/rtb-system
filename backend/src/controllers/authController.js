@@ -7,7 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_jwt_key_123';
 export const register = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
-        const roleLower= role.toLowerCase();
+        const roleLower = role.toLowerCase();
 
 
         if (!['admin', 'dealer'].includes(roleLower)) {
@@ -19,7 +19,7 @@ export const register = async (req, res) => {
 
         const result = await query(
             'INSERT INTO users (name, email, password_hash, role) VALUES ($1, $2, $3, $4) RETURNING id, name, email, role',
-            [name, email, passwordHash, role]
+            [name, email, passwordHash, roleLower.toUpperCase()]
         );
 
         res.status(201).json(result.rows[0]);
