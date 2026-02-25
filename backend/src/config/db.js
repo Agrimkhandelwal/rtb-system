@@ -25,7 +25,12 @@ export const initializeDatabase = async () => {
         await pool.query(`
             CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
-            CREATE TABLE IF NOT EXISTS users (
+            -- Drop old tables if they exist to prevent UUID vs Integer conflicts from previous deployments
+            DROP TABLE IF EXISTS bids CASCADE;
+            DROP TABLE IF EXISTS auctions CASCADE;
+            DROP TABLE IF EXISTS users CASCADE;
+
+            CREATE TABLE users (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                 name VARCHAR(255) NOT NULL,
                 email VARCHAR(255) UNIQUE NOT NULL,
@@ -34,7 +39,7 @@ export const initializeDatabase = async () => {
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
 
-            CREATE TABLE IF NOT EXISTS auctions (
+            CREATE TABLE auctions (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                 item_name VARCHAR(255) NOT NULL,
                 start_price DECIMAL(12, 2) NOT NULL,
@@ -44,7 +49,7 @@ export const initializeDatabase = async () => {
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );
 
-            CREATE TABLE IF NOT EXISTS bids (
+            CREATE TABLE bids (
                 id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
                 auction_id UUID REFERENCES auctions(id) ON DELETE CASCADE,
                 dealer_id UUID REFERENCES users(id),
@@ -53,9 +58,9 @@ export const initializeDatabase = async () => {
             );
 
             -- Indexes for fast lookup
-            CREATE INDEX IF NOT EXISTS idx_auctions_status ON auctions(status);
-            CREATE INDEX IF NOT EXISTS idx_bids_auction_id ON bids(auction_id);
-            CREATE INDEX IF NOT EXISTS idx_bids_dealer_id ON bids(dealer_id);
+            CREATE INDEX idx_auctions_status ON auctions(status);
+            CREATE INDEX idx_bids_auction_id ON bids(auction_id);
+            CREATE INDEX idx_bids_dealer_id ON bids(dealer_id);
         `);
         console.log('Database tables successfully initialized.');
     } catch (err) {
