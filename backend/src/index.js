@@ -11,6 +11,9 @@ import auctionRoutes from './routes/auctionRoutes.js';
 // Socket handlers
 import { setupSocket } from './socket.js';
 
+// Database config
+import { initializeDatabase } from './config/db.js';
+
 dotenv.config();
 
 const app = express();
@@ -57,6 +60,9 @@ setupSocket(io);
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok', time: new Date() });
 });
+
+// Initialize database
+await initializeDatabase();
 
 const PORT = process.env.PORT || 5000;
 

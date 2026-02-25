@@ -19,3 +19,46 @@ pool.on('error', (err) => {
 
 export const query = (text, params) => pool.query(text, params);
 export const getClient = () => pool.connect();
+
+export const initializeDatabase = async () => {
+    try {
+        await pool.query(`
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+            CREATE TABLE IF NOT EXISTS users (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                name VARCHAR(255) NOT NULL,
+                email VARCHAR(255) UNIQUE NOT NULL,
+                password_hash VARCHAR(255) NOT NULL,
+                role VARCHAR(50) NOT NULL CHECK (role IN ('ADMIN', 'DEALER')),
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE TABLE IF NOT EXISTS auctions (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                item_name VARCHAR(255) NOT NULL,
+                start_price DECIMAL(12, 2) NOT NULL,
+                current_price DECIMAL(12, 2) NOT NULL,
+                status VARCHAR(50) NOT NULL DEFAULT 'INACTIVE' CHECK (status IN ('INACTIVE', 'ACTIVE', 'CLOSED')),
+                created_by UUID REFERENCES users(id),
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE TABLE IF NOT EXISTS bids (
+                id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+                auction_id UUID REFERENCES auctions(id) ON DELETE CASCADE,
+                dealer_id UUID REFERENCES users(id),
+                amount DECIMAL(12, 2) NOT NULL,
+                created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+            );
+
+            -- Indexes for fast lookup
+            CREATE INDEX IF NOT EXISTS idx_auctions_status ON auctions(status);
+            CREATE INDEX IF NOT EXISTS idx_bids_auction_id ON bids(auction_id);
+            CREATE INDEX IF NOT EXISTS idx_bids_dealer_id ON bids(dealer_id);
+        `);
+        console.log('Database tables successfully initialized.');
+    } catch (err) {
+        console.error('Failed to initialize database tables:', err);
+    }
+};
