@@ -3,12 +3,13 @@ import jwt from 'jsonwebtoken';
 import { query } from '../config/db.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_jwt_key_123';
+const roleLower= role.toLowerCase();
 
 export const register = async (req, res) => {
     try {
         const { name, email, password, role } = req.body;
 
-        if (!['ADMIN', 'DEALER'].includes(role)) {
+        if (!['admin', 'dealer'].includes(roleLower)) {
             return res.status(400).json({ error: 'Invalid role' });
         }
 
