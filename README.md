@@ -12,7 +12,8 @@ A robust, ultra-low latency, full-stack real-time bidding application. Engineere
 
 ## 🌐 Live Demo
 
-🚀 **Production App:** [Live on Vercel](https://rtb-system-58olqpkwa-agrims-projects-fd95ab4c.vercel.app/)
+🚀 **Production App (Frontend):** [Live on Vercel](https://rtb-system-58olqpkwa-agrims-projects-fd95ab4c.vercel.app/)  
+⚙️ **Production API (Backend):** [Hosted on Render](https://rtb-backend-d50j.onrender.com)
 
 > [!NOTE]
 > The backend is hosted on Render's free tier. If the application hasn't been accessed recently, the initial request (such as logging in or signing up) may take up to 50 seconds while the server spins up. Please be patient on the first load!
