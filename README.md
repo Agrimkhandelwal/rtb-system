@@ -12,7 +12,7 @@ A robust, ultra-low latency, full-stack real-time bidding application. Engineere
 
 ## 🌐 Live Demo
 
-🚧 Not deployed yet — Docker-based local environment required
+🚀 **Production App:** [Live on Vercel](https://rtb-system-58olqpkwa-agrims-projects-fd95ab4c.vercel.app/)
 
 ---
 
@@ -213,7 +213,7 @@ Developed as an advanced full-stack assignment. Open for review purposes.
 - Focus: Real-Time Systems & Scalable Web Applications
 
 📧 Email: agrimkhandelwal11@gmail.com  
-🔗 GitHub: https://github.com/AgrimKhandelwal
+🔗 GitHub Repo: [Agrimkhandelwal/rtb-system](https://github.com/Agrimkhandelwal/rtb-system)
 
 ---
 
